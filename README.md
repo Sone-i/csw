@@ -2,6 +2,7 @@
 これは平叙文肯定や平叙文否定、疑問文、命令文など、様々な文型からなる日本語の文章を互いに変換することができるツールです。<br />
 文章の形態素解析を行い、変換をルールベースによって実現しています。<br />
 **pip install git+https://github.com/Sone-i/csw** とコマンドを打つことでインストール可能です。<br />
+コマンド終了後、 ImportError: cannot import name 'main' from 'csw.csw' のようなエラーが出力されますが、動作には問題ありません。<br />
 
 # 環境
 Linux OS<br />

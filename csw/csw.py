@@ -13,43 +13,43 @@ from . import o2n
 
 def convertSentences(inputText) :
 	if args.n2d :
-		return n2d.ND(inputText, args.det)
+		return n2d.ND(inputText, args.detail)
 
 	elif args.d2n :
-		return d2n.DN(inputText, args.det)
+		return d2n.DN(inputText, args.detail)
 
 	elif args.n2q :
-		return n2q.NQ(inputText, args.det)
+		return n2q.NQ(inputText, args.detail)
 
 	elif args.q2n :
-		return q2n.QN(inputText, args.det)
+		return q2n.QN(inputText, args.detail)
 
 	elif args.n2o :
-		return n2o.NO(inputText, args.det)
+		return n2o.NO(inputText, args.detail)
 
 	elif args.o2n :
-		return o2n.ON(inputText, args.det)
+		return o2n.ON(inputText, args.detail)
 
 	else :
 		sys.exit(0)
 
 # コマンドライン引数の解析
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description = "変換のオプション指定には、n2oやd2nのように、変換元か変換先のどちらかに平叙文肯定(n)を含む必要があります。こちらも併せてご覧下さい(https://pypi.org/project/csw/)。")
 
-parser.add_argument("-n2d", action = "store_true")
-parser.add_argument("-d2n", action = "store_true")
-parser.add_argument("-n2q", action = "store_true")
-parser.add_argument("-q2n", action = "store_true")
-parser.add_argument("-n2o", action = "store_true")
-parser.add_argument("-o2n", action = "store_true")
-parser.add_argument("-det", action = "store_true")
-parser.add_argument("-cur", action = "store_true")
-parser.add_argument("-file", action = "store_true")
+parser.add_argument("--n2d", action = "store_true", help = "平叙文肯定から平叙文否定への変換")
+parser.add_argument("--d2n", action = "store_true", help = "平叙文否定から平叙文肯定への変換")
+parser.add_argument("--n2q", action = "store_true", help = "平叙文肯定から疑問文への変換")
+parser.add_argument("--q2n", action = "store_true", help = "疑問文から平叙文肯定への変換")
+parser.add_argument("--n2o", action = "store_true", help = "平叙文肯定から命令文への変換")
+parser.add_argument("--o2n", action = "store_true", help = "命令文から平叙文肯定への変換")
+parser.add_argument("-d", "--detail", action = "store_true", help = "形態素解析の結果を表示(fオプションとの併用不可)")
+parser.add_argument("-c", "--current", action = "store_true", help = "一文ずつ入出力(fオプションとの併用不可)")
+parser.add_argument("-f", "--file", nargs = 2, help = "ファイルでの入出力(その後ろに変換元ファイル名、変換先ファイル名を順に指定)")
 
 args = parser.parse_args()
 
 # 手動
-if args.cur :
+if args.current :
 	print("「e」か「え」を入力で終了")
 	print("")
 	while True :
@@ -64,10 +64,8 @@ if args.cur :
 
 # ファイル入出力
 elif args.file :
-	print("input file  : ", end = "")
-	iFile = input()
-	print("output file : ", end = "")
-	oFile = input()
+	iFile = args.file[0]
+	oFile = args.file[1]
 
 	with open(iFile, "r") as r :
 		with open(oFile, "w") as w :

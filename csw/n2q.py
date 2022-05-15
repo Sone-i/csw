@@ -3,8 +3,7 @@ import MeCab
 import os
 
 def NQ(inputText, det) :
-	tagger = MeCab.Tagger()
-	
+	tagger = MeCab.Tagger("-d /var/lib/mecab/dic/ipadic-utf8")	
 	# 空文字列をparseすることでnode.surfaceのバグをケアする
 	tagger.parse('')
 

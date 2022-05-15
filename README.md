@@ -15,15 +15,13 @@ n：平叙文肯定,&nbsp;d：平叙文否定,&nbsp;q：疑問文,&nbsp;o：命�
 -c,&nbsp;--current：一文ずつ入出力<br />
 -d,&nbsp;--detail：形態素解析結果を表示<br />
 -f,&nbsp;--file：ファイルによる入出力(その後ろに変換元ファイル名、変換先ファイル名を順に指定)<br />
-<br />
-変換のオプション指定には、n2oやd2nのように、変換元か変換先のどちらかに平叙文肯定(n)を含む必要があります。<br />
 
 # 使用例
 **csw --n2d --current --detail もしくは csw --n2d -cd**
 - 平叙文肯定から平叙文否定への変換を一文ずつの入出力で行います。
 
-**csw --q2n --file hoge.txt piyo.txt もしくは csw --q2n -f hoge.txt piyo.txt**
-- 疑問文のみが記述されたhoge.txtから、平叙文肯定に変換された文章をpiyo.txtへ上書きします。
+**csw --q --file hoge.txt piyo.txt もしくは csw --q -f hoge.txt piyo.txt**
+- 様々な文型の文章で構成されたhoge.txtを全て疑問文に変換し、それらをpiyo.txtへ上書きします。
 
 # 実行例
 ```
@@ -47,6 +45,6 @@ input  : e
 <br />
 
 ```
-$ csw --n2d -f input.txt output.txt
+$ csw --d -f input.txt output.txt
 $
 ```

@@ -3,10 +3,10 @@ import MeCab
 import os
 
 def ND(inputText, det):
-	tagger = MeCab.Tagger()
-	
-	# 空文字列をparseすることでnode.surfaceのバグをケアする
 	tagger = MeCab.Tagger("-d /var/lib/mecab/dic/ipadic-utf8")
+	# 空文字列をparseすることでnode.surfaceのバグをケアする
+	tagger.parse('')
+	
 	# 半角記号を全角にする
 	inputText = inputText.replace("!", "！")
 	inputText = inputText.replace(",", "、")

@@ -2,7 +2,7 @@ import re
 import MeCab
 import os
 
-Dfeatures  = ["ない", "無い", "なかっ", "無かっ", "ません"]
+Dfeatures  = ["ない", "無い", "なかっ", "無かっ"]
 
 def SPJ(inputText):
 	tagger = MeCab.Tagger()
@@ -18,7 +18,6 @@ def SPJ(inputText):
 
 	# ！と。を前の文に含んで分割
 	inputLines = []
-	outputLines = []
 	inputLines = re.split("(?<=。|！)", inputText)
 	
 	if '' in inputLines :
@@ -72,18 +71,20 @@ def SPJ(inputText):
 
 		partsLength = len(parts)
 
-		outputText = "tekitoudayo"
+		verbCount = 0
 
 		for j in range(partsLength - 1, -1, -1) :
+			if parts[j][1] == "動詞" :
+				verbCount += 1
 			if parts[j][0] == "？" or (parts[j][0] == "。" or parts[j][0] == "！") and parts[j - 1][0] == "か":
 				sp = "q"
 				break
 
-			elif parts[j][0] in Dfeatures :
+			elif parts[j][0] in Dfeatures and (parts[j][1] == "助動詞" or parts[j][1] == "形容詞") or j - 1 > 0 and parts[j][0] == "ん" and parts[j - 1][0] == "ませ" :
 				sp = "d"
 				break
 
-			elif "命令" in parts[j][6] :
+			elif "命令" in parts[j][6] and verbCount == 1:
 				sp = "o"
 				break
 

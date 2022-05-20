@@ -2,22 +2,19 @@ import re
 import MeCab
 import os
 
+checkNai = ["ない", "助動詞", "*", "*","*", "特殊・ナイ", "基本形", "ない"]
+checkKei = ["形容動詞", "動詞"]
+
+AverbSpecial = ["ぬ", "まい"]
+
+godanGyoui = ["カ行イ音便", "ガ行"]
+godanGyoultu = ["カ行促音便", "タ行", "ラ行", "ワ行促音便"]
+godanGyousi = ["サ行"]
+godanGyoun = ["ナ行", "バ行", "マ行"]
+waReigai = ["問", "乞", "請"]
+noHenkan = ["ほかなら", "他なら", "はず", "筈", "なくては", "無くては", "しか", "ざるを", "かも", "何も", "なにも"]
+
 def DN(inputText, det) :
-	outputText = "tekitoudayo"
-	
-	checkNai = ["ない", "助動詞", "*", "*","*", "特殊・ナイ", "基本形", "ない"]
-	checkKei = ["形容動詞", "動詞"]
-
-	AverbSpecial = ["ぬ", "まい"]
-
-	godanGyoui = ["カ行イ音便", "ガ行"]
-	godanGyoultu = ["カ行促音便", "タ行", "ラ行", "ワ行促音便"]
-	godanGyousi = ["サ行"]
-	godanGyoun = ["ナ行", "バ行", "マ行"]
-	waReigai = ["問", "乞", "請"]
-	noHenkan = ["ほかなら", "他なら", "はず", "筈", "なくては", "無くては", "しか", "ざるを", "かも", "何も", "なにも"]
-	noHenkanFlag = 0
-
 	tagger = MeCab.Tagger("-d /var/lib/mecab/dic/ipadic-utf8")	
 	# 空文字列をparseすることでnode.surfaceのバグをケアする
 	tagger.parse('')
@@ -36,6 +33,7 @@ def DN(inputText, det) :
 	inputLines = []
 	outputLines = []
 	inputLines = re.split("(?<=。|！)", inputText)
+	noHenkanFlag = 0
 		
 	# 分割したときに出る空白文字列を除去 
 	if '' in inputLines :
@@ -45,8 +43,8 @@ def DN(inputText, det) :
 
 	for i in range(0, lineCount, 1) :
 		parts = []
+		outputText = "tekitoudayo"
 		meCount = 0
-		addFlag = 0
 		changeFlag = 0
 		impressFlag = 0
 		hukusiFlag = 0
@@ -98,10 +96,9 @@ def DN(inputText, det) :
 		# 文末に記号が無いとき、一時的につけて最後に除去する
 		if tmp1 != "記号" :
 			parts.append(["!。！", "記号", "**", "**", "**", "**", "**", "**"])
-			addFlag = 1
 
 		partsLength = len(parts)
-
+	
 		for j in range(0, partsLength, 1) :
 			for k in range(0, len(noHenkan), 1) :
 				if noHenkan[k] in inputLines[i] :
@@ -138,7 +135,7 @@ def DN(inputText, det) :
 			elif j - 1 >= 0 and "ナイ" in parts[j - 1][2] and parts[j][1] != "助動詞" :
 				pass
 
-			elif j - 1 >= 0 and parts[j - 1][2] != "副助詞" and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "ない" or parts[j + 1][0] == "無い") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形" or (partsLength - 1 >= j + 3 and parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞")) or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and parts[j + 1][1] == "形容詞") and (parts[j + 2][1] == "記号" or parts[j + 2][2] == "終助詞" or "ダ" in parts[j + 2][5] and parts[j + 2][6] == "未然形" or parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞") :
+			elif j - 1 >= 0 and parts[j - 1][2] != "副助詞" and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "ない" or parts[j + 1][0] == "無い") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形" or (partsLength - 1 >= j + 3 and parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞")) or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and (parts[j + 1][1] == "形容詞" or parts[j][2] == "副助詞")) and (parts[j + 2][1] == "助動詞" and "デス" in parts[j + 2][5] or parts[j + 2][1] == "記号" or parts[j + 2][2] == "終助詞" or "ダ" in parts[j + 2][5] and parts[j + 2][6] == "未然形" or parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞") :
 				if j - 1 > 0 and parts[j - 1][1] == "助動詞" and parts[j][1] == "助詞" and parts[j][2] == "係助詞" :
 					outputLines.remove(parts[j - 1][0])
 					parts[j][0] = parts[j - 1][7]
@@ -152,11 +149,18 @@ def DN(inputText, det) :
 					parts[j][0] = parts[j][7]
 					parts[j + 1][0] = ''
 
+				elif parts[j][0] == "なら" and "非" in parts[j][2] :
+					pass
+
 				# 「〜ならない」、「〜いけない」とかも変換しちゃう
 				elif parts[j][6] == "未然形" and parts[j + 1][1] == "助動詞" :
 					parts[j][0] = parts[j][7]
 					parts[j + 1][0] = ''
 				
+				elif parts[j][2] == "副助詞" :
+					parts[j][0] = ''
+					parts[j + 1][0] = ''
+
 				elif parts[j][6] != "未然形" and j - 1 > 0 and (parts[j - 1][2] == "係助詞" or parts[j - 1][2] == "副助詞") :
 					pass
 
@@ -193,16 +197,16 @@ def DN(inputText, det) :
 				elif parts[j][1] == "助詞" :
 					parts[j + 1][0] = "ある"
 
-				elif parts[j][2] == "副助詞" :
-					parts[j][0] = ''
+				# 「ならない」を変換してしまう
+				elif parts[j][1] == "動詞" :
+					parts[j][0] = parts[j][7]
 					parts[j + 1][0] = ''
 
-				#「ならない」を変換してしまう
-				# elif parts[j][1] == "動詞" :
-				#	print(inputLines[i])
+			elif j - 1 >= 0 and parts[j - 1][2] != "副助詞" and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "なかっ" or parts[j + 1][0] == "無かっ") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形") or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and parts[j + 1][1] == "形容詞") and parts[j + 2][0] == "た" and (parts[j + 3][1] == "記号" or parts[j + 3][1] == "名詞" and "非" in parts[j + 3][2] or parts[j + 3][2] == "終助詞" or "ダ" in parts[j + 3][5] and parts[j + 3][6] == "未然形") :
+				if "てはならなかった" in inputLines[i] :
+					pass
 
-			elif j - 1 >= 0 and parts[j - 1][2] != "副助詞" and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "なかっ" or parts[j + 1][0] == "無かっ") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形") or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and parts[j + 1][1] == "形容詞") and parts[j + 2][0] == "た" and (parts[j + 3][1] == "記号" or parts[j + 3][2] == "終助詞" or "ダ" in parts[j + 3][5] and parts[j + 3][6] == "未然形") :
-				if parts[j][0] in noHenkan :
+				elif parts[j][0] in noHenkan :
 					pass
 
 				elif j - 1 > 0 and parts[j - 1][1] == "助動詞" and parts[j][1] == "助詞" and parts[j][2] == "係助詞" :
@@ -224,6 +228,10 @@ def DN(inputText, det) :
 				elif parts[j][1] == "形容詞" :
 					parts[j][0] = parts[j][0][:-1]
 					parts[j + 1][0] = parts[j + 1][0][1:]
+
+				elif parts[j][2] == "副助詞" :
+					parts[j][0] = ''
+					parts[j + 1][0] = "だっ"
 
 				elif j - 1 > 0 and parts[j - 1][0] == "ば" and parts[j][1] == "動詞" :
 					pass

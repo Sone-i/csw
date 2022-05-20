@@ -5,8 +5,6 @@ import os
 gimonsiTati = ["ナニ", "ドレ", "ドチラ", "ドッチ", "ドナタ", "ドコ", "ダレ", "イツ", "イクラ", "イクツ", "ドノ", "ドウ", "ドウシテ", "ナゼ", "ドンナ", "ナン", "イカニ", "イズコ", "イカナル"]
 
 def QN(inputText, det) :
-	outputText = "tekitoudayo"
-	
 	tagger = MeCab.Tagger("-d /var/lib/mecab/dic/ipadic-utf8")	
 	# 空文字列をparseすることでnode.surfaceのバグをケアする
 	tagger.parse('')
@@ -34,8 +32,8 @@ def QN(inputText, det) :
 
 	for i in range(0, lineCount, 1) :
 		parts = []
+		outputText = "tekitoudayo"
 		meCount = 0
-		addFlag = 0
 		changeFlag = 0
 		impressFlag = 0
 		gimonsiFlag = 0
@@ -79,7 +77,6 @@ def QN(inputText, det) :
 		# 文末に記号が無いとき、一時的につけて最後に除去する
 		if tmp1 != "記号" :
 			parts.append(["!。！", "記号", "**", "**", "**", "**", "**", "**"])
-			addFlag = 1
 
 		partsLength = len(parts)
 

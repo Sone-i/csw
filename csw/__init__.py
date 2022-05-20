@@ -6,4 +6,4 @@ from .n2o import *
 from .o2n import *
 from .spj import *
 
-__version__ = '0.3.0'
+__version__ = '0.3.2'

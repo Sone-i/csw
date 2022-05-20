@@ -31,7 +31,6 @@ def ON(inputText, det) :
 	for i in range(0, lineCount, 1) :
 		parts = []
 		meCount = 0
-		addFlag = 0
 		changeFlag = 0
 		impressFlag = 0
 		hukusiFlag = 0
@@ -68,7 +67,6 @@ def ON(inputText, det) :
 		# 文末に記号が無いとき、一時的につけて最後に除去する
 		if tmp1 != "記号" :
 			parts.append(["!。！", "記号", "**", "**", "**", "**", "**", "**"])
-			addFlag = 1
 
 		partsLength = len(parts)
 

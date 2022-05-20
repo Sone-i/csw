@@ -31,7 +31,6 @@ def NQ(inputText, det) :
 	for i in range(0, lineCount, 1) :
 		parts = []
 		meCount = 0
-		addFlag = 0
 		changeFlag = 0
 		impressFlag = 0
 

@@ -2,6 +2,12 @@ import re
 import MeCab
 import os
 
+checkNai = ["ない", "助動詞", "*", "*","*", "特殊・ナイ", "基本形", "ない"]
+AverbKei = ["たい", "らしい", "たかっ", "らしかっ"]
+AverbSpecial = ["ます", "です", "だ", "た", "まし", "でし", "だっ"]
+AverbSpecialHen = ["マス", "デス", "ダ", "タ"]
+		
+
 def ND(inputText, det):
 	tagger = MeCab.Tagger("-d /var/lib/mecab/dic/ipadic-utf8")
 	# 空文字列をparseすることでnode.surfaceのバグをケアする
@@ -36,7 +42,7 @@ def ND(inputText, det):
 		length = tagger.parse(inputLines[i]).count(os.linesep)
 
 		parts = []
-		tmpSymbol = 0
+		outputText = "tekitoudayo"
 		impressFlag = 0
 		tmpSurface = 0
 		tmp1 = 0
@@ -47,7 +53,6 @@ def ND(inputText, det):
 		tmp6 = 0
 		meCount = 0
 		changeFlag = 0
-		checkNai = ["ない", "助動詞", "*", "*","*", "特殊・ナイ", "基本形", "ない"]
 
 		while node:
 			# 表層語を取ってくる
@@ -79,18 +84,10 @@ def ND(inputText, det):
 			# ノードを進める
 			node = node.next
 
-		addFlag = 0
 		if tmp1 != "記号" :
 			parts.append(["!。！", "記号", "**", "**", "**", "**", "**", "**"])
-			addFlag = 1
 
 		partsLength = len(parts)
-
-		AverbKei = ["たい", "らしい", "たかっ", "らしかっ"]
-		AverbSpecial = ["ます", "です", "だ", "た", "まし", "でし", "だっ"]
-		AverbSpecialHen = ["マス", "デス", "ダ", "タ"]
-		
-		outputText = "tekitoudayo"
 
 		for j in range(0, partsLength, 1) :
 			if parts[partsLength - 1][0] == "、" :

@@ -72,8 +72,8 @@ def convertSentences(inputText) :
 
 	elif args.n :
 		mode = spj.SPJ(inputText)
-		if mode == "n" and args.detail :
-			return kk.myParse(inputText)
+		if mode == "n" :
+			return kk.myParse(inputText, args.detail)
 		elif mode == "d" :
 			return cd2n(inputText)
 		elif mode == "q" :
@@ -87,8 +87,8 @@ def convertSentences(inputText) :
 		mode = spj.SPJ(inputText)
 		if mode == "n" :
 			return cn2d(inputText)
-		elif mode == "d" and args.detail :
-			return kk.myParse(inputText)
+		elif mode == "d" :
+			return kk.myParse(inputText, args.detail)
 		elif mode == "q" :
 			return cq2d(inputText)
 		elif mode == "o" :
@@ -102,8 +102,8 @@ def convertSentences(inputText) :
 			return cn2q(inputText)
 		elif mode == "d" :
 			return cd2q(inputText)
-		elif mode == "q" and args.detail :
-			return kk.myParse(inputText)
+		elif mode == "q" :
+			return kk.myParse(inputText, args.detail)
 		elif mode == "o" :
 			return co2q(inputText)
 		else :
@@ -117,8 +117,8 @@ def convertSentences(inputText) :
 			return cd2o(inputText)
 		elif mode == "q" :
 			return cq2o(inputText)
-		elif mode == "o" and args.detail :
-			return kk.myParse(inputText)
+		elif mode == "o" :
+			return kk.myParse(inputText, args.detail)
 		else :
 			sys.exit(0)
 
@@ -128,7 +128,7 @@ def convertSentences(inputText) :
 # コマンドライン引数の解析
 parser = argparse.ArgumentParser(description = "詳しくはこちらをご覧下さい(https://pypi.org/project/csw/)。")
 
-parser.add_argument("-v", "--version", action = "version", version = "%(prog)s 0.3.2")
+parser.add_argument("-v", "--version", action = "version", version = "%(prog)s 0.3.4")
 parser.add_argument("--n2d", action = "store_true", help = "平叙文肯定から平叙文否定への変換")
 parser.add_argument("--n2q", action = "store_true", help = "平叙文肯定から疑問文への変換")
 parser.add_argument("--n2o", action = "store_true", help = "平叙文肯定か命令文への変換")

@@ -3,8 +3,9 @@
 import MeCab
 import os
 
-def myParse(inputText) :
+def myParse(inputText, det) :
 	tagger = MeCab.Tagger("-d /var/lib/mecab/dic/ipadic-utf8")
-	print(tagger.parse(inputText))
+	if det :
+		print(tagger.parse(inputText))
 
-	return inputText
+	return inputText.strip() + "\n"

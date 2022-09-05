@@ -23,23 +23,47 @@ def cn2o(inputText) :
 def cd2n(inputText) :
 	return d2n.DN(inputText, args.detail)
 def cd2q(inputText) :
-	return n2q.NQ(d2n.DN(inputText, args.detail).strip(), args.detail)
+	tmp1 = d2n.DN(inputText, args.detail).strip()
+	tmp2 = n2q.NQ(tmp1, args.detail).strip()
+	if tmp1 == inputText or tmp1 == tmp2:
+		return inputText
+	return tmp2
 def cd2o(inputText) :
-	return n2o.NO(d2n.DN(inputText, args.detail).strip(), args.detail)
+	tmp1 = d2n.DN(inputText, args.detail).strip()
+	tmp2 = n2o.NO(tmp1, args.detail).strip()
+	if tmp1 == inputText or tmp1 == tmp2:
+		return inputText
+	return tmp2
 
 def cq2n(inputText) :
 	return q2n.QN(inputText, args.detail)
 def cq2d(inputText) :
-	return n2d.ND(q2n.QN(inputText, args.detail).strip(), args.detail)
+	tmp1 = q2n.QN(inputText, args.detail).strip()
+	tmp2 = n2d.ND(tmp1, args.detail).strip()
+	if tmp1 == inputText or tmp1 == tmp2:
+		return inputText
+	return tmp2
 def cq2o(inputText) :
-	return n2o.NO(q2n.QN(inputText, args.detail).strip(), args.detail)
+	tmp1 = q2n.QN(inputText, args.detail).strip()
+	tmp2 = n2o.NO(tmp1, args.detail).strip()
+	if tmp1 == inputText or tmp1 == tmp2:
+		return inputText
+	return tmp2
 
 def co2n(inputText) :
 	return o2n.ON(inputText, args.detail)
 def co2d(inputText) :
-	return n2d.ND(o2n.ON(inputText, args.detail).strip(), args.detail)
+	tmp1 = o2n.ON(inputText, args.detail).strip()
+	tmp2 = n2d.ND(tmp1, args.detail).strip()
+	if tmp1 == inputText or tmp1 == tmp2:
+		return inputText
+	return tmp2
 def co2q(inputText) :
-	return n2q.NQ(o2n.ON(inputText, args.detail).strip(), args.detail)
+	tmp1 = o2n.ON(inputText, args.detail).strip()
+	tmp2 = n2q.NQ(tmp1, args.detail).strip()
+	if tmp1 == inputText or tmp1 == tmp2:
+		return inputText
+	return tmp2
 
 def convertSentences(inputText) :
 	if args.n2d :
@@ -128,7 +152,7 @@ def convertSentences(inputText) :
 # コマンドライン引数の解析
 parser = argparse.ArgumentParser(description = "詳しくはこちらをご覧下さい(https://pypi.org/project/csw/)。")
 
-parser.add_argument("-v", "--version", action = "version", version = "%(prog)s 0.3.4")
+parser.add_argument("-v", "--version", action = "version", version = "%(prog)s 0.3.5")
 parser.add_argument("--n2d", action = "store_true", help = "平叙文肯定から平叙文否定への変換")
 parser.add_argument("--n2q", action = "store_true", help = "平叙文肯定から疑問文への変換")
 parser.add_argument("--n2o", action = "store_true", help = "平叙文肯定か命令文への変換")

@@ -2,7 +2,7 @@ import re
 import MeCab
 import os
 
-Dfeatures  = ["ない", "無い", "なかっ", "無かっ"]
+AverbSpecial = ["ぬ", "まい"]
 
 def SPJ(inputText):
 	tagger = MeCab.Tagger()
@@ -80,11 +80,11 @@ def SPJ(inputText):
 				sp = "q"
 				break
 
-			elif parts[j][0] in Dfeatures and (parts[j][1] == "助動詞" or parts[j][1] == "形容詞") or j - 1 > 0 and parts[j][0] == "ん" and parts[j - 1][0] == "ませ" :
+			elif (partsLength - 1 >= j + 2 and "非" not in parts[j][2] and parts[j + 1][0] == "ませ" and parts[j + 1][1] == "助動詞" and "命令" not in parts[j + 1][6] and (parts[j + 3][0] == "。" or parts[j + 3][2] == "終助詞" or parts[j + 3][1] == "助動詞")) or (partsLength - 1 >= j + 1 and parts[j + 1][0] in AverbSpecial and parts[j + 1][1] == "助動詞" and parts[j + 2][1] == "記号") or (j - 1 >= 0 and parts[j - 1][2] != "副助詞" and "非" not in parts[j][2] and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "ない" or parts[j + 1][0] == "無い") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形" or (partsLength - 1 >= j + 3 and parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞")) or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and (parts[j + 1][1] == "形容詞" or parts[j][2] == "副助詞")) and (parts[j + 2][1] == "助動詞" and "デス" in parts[j + 2][5] or parts[j + 2][1] == "記号" or parts[j + 2][2] == "終助詞" or "ダ" in parts[j + 2][5] and parts[j + 2][6] == "未然形" or parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞")) or (j - 1 >= 0 and parts[j - 1][2] != "副助詞" and "非" not in parts[j][2] and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "ない" or parts[j + 1][0] == "無い") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形" or (partsLength - 1 >= j + 3 and parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞")) or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and (parts[j + 1][1] == "形容詞" or parts[j][2] == "副助詞")) and (parts[j + 2][1] == "助動詞" and "デス" in parts[j + 2][5] or parts[j + 2][1] == "記号" or parts[j + 2][2] == "終助詞" or "ダ" in parts[j + 2][5] and parts[j + 2][6] == "未然形" or parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞")) or (j - 1 >= 0 and parts[j - 1][2] != "副助詞" and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "なかっ" or parts[j + 1][0] == "無かっ") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形") or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and parts[j + 1][1] == "形容詞") and parts[j + 2][0] == "た" and (parts[j + 3][1] == "記号" or parts[j + 3][1] == "名詞" and "非" in parts[j + 3][2] or parts[j + 3][2] == "終助詞" or "ダ" in parts[j + 3][5] and parts[j + 3][6] == "未然形")):
 				sp = "d"
 				break
 
-			elif "命令" in parts[j][6] and verbCount == 1:
+			elif ("命令" in parts[j][6] or parts[j][6] == "基本形" and partsLength - 1 >= j + 1 and parts[j + 1][0] == "な") and verbCount == 1:
 				sp = "o"
 				break
 
@@ -92,3 +92,4 @@ def SPJ(inputText):
 				sp = "n"
 
 	return sp
+

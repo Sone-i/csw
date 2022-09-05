@@ -71,9 +71,21 @@ def ON(inputText, det) :
 		partsLength = len(parts)
 
 		for j in range(0, partsLength, 1) :
-			if "命令" in parts[j][6] :
+			if partsLength - 1 >= j + 1 and "命令" in parts[j + 1][6] and "非" in parts[j + 1][2] :
+				if "接続" in parts[j][2]:
+					parts[j + 1][0] = parts[j + 1][7]
+
+				else:
+					parts[j][0] = parts[j][7]
+					parts[j + 1][0] = ''
+
+			elif "命令" in parts[j][6] and "非" not in parts[j][2] :
 				parts[j][0] = parts[j][7]
+
+			elif parts[j][6] == "基本形" and partsLength - 1 >= j + 1 and parts[j + 1][2] == "終助詞" :
+				parts[j + 1][0] = ""
 
 			outputLines.append(parts[j][0])
 
 	return ''.join(outputLines).replace("!。！", '') + '\n'
+

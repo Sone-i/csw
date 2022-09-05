@@ -12,7 +12,7 @@ godanGyoultu = ["カ行促音便", "タ行", "ラ行", "ワ行促音便"]
 godanGyousi = ["サ行"]
 godanGyoun = ["ナ行", "バ行", "マ行"]
 waReigai = ["問", "乞", "請"]
-noHenkan = ["ほかなら", "他なら", "はず", "筈", "なくては", "無くては", "しか", "ざるを", "かも", "何も", "なにも"]
+noHenkan = ["ほかなら", "他なら", "はず", "筈", "なくては", "無くては", "しか", "ざるを", "かも"]
 
 def DN(inputText, det) :
 	tagger = MeCab.Tagger("-d /var/lib/mecab/dic/ipadic-utf8")	
@@ -89,9 +89,9 @@ def DN(inputText, det) :
 			# ノードを進める
 			node = node.next
 
-		if hukusiFlag == 1 :
-			outputLines.append(inputLines[i])
-			continue
+		#if hukusiFlag == 1 :
+		#	outputLines.append(inputLines[i])
+		#	continue
 
 		# 文末に記号が無いとき、一時的につけて最後に除去する
 		if tmp1 != "記号" :
@@ -101,7 +101,7 @@ def DN(inputText, det) :
 	
 		for j in range(0, partsLength, 1) :
 			for k in range(0, len(noHenkan), 1) :
-				if noHenkan[k] in inputLines[i] :
+				if noHenkan[k] in inputLines[i] and noHenkanFlag == 0:
 					outputLines.append(inputLines[i])
 					noHenkanFlag = 1
 
@@ -112,7 +112,7 @@ def DN(inputText, det) :
 			if parts[j][2]  == "格助詞" and parts[j + 1][2] == "係助詞" and (parts[j + 2][0] == "ない" or parts[j + 2][0] == "なかっ" or parts[j + 2][0] == "ません") :
 				pass
 
-			if partsLength - 1 >= j + 2 and parts[j + 1][0] == "ませ" and parts[j + 1][1] == "助動詞" and "命令" not in parts[j + 1][6] and (parts[j + 3][0] == "。" or parts[j + 3][2] == "終助詞" or parts[j + 3][1] == "助動詞") :
+			if partsLength - 1 >= j + 2 and "非" not in parts[j][2] and parts[j + 1][0] == "ませ" and parts[j + 1][1] == "助動詞" and "命令" not in parts[j + 1][6] and (parts[j + 3][0] == "。" or parts[j + 3][2] == "終助詞" or parts[j + 3][1] == "助動詞") :
 				if j - 1 > 0 and parts[j - 1][2] == "副助詞" :
 					pass
 
@@ -135,9 +135,9 @@ def DN(inputText, det) :
 			elif j - 1 >= 0 and "ナイ" in parts[j - 1][2] and parts[j][1] != "助動詞" :
 				pass
 
-			elif j - 1 >= 0 and parts[j - 1][2] != "副助詞" and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "ない" or parts[j + 1][0] == "無い") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形" or (partsLength - 1 >= j + 3 and parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞")) or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and (parts[j + 1][1] == "形容詞" or parts[j][2] == "副助詞")) and (parts[j + 2][1] == "助動詞" and "デス" in parts[j + 2][5] or parts[j + 2][1] == "記号" or parts[j + 2][2] == "終助詞" or "ダ" in parts[j + 2][5] and parts[j + 2][6] == "未然形" or parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞") :
+			elif j - 1 >= 0 and parts[j - 1][2] != "副助詞" and "非" not in parts[j][2] and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "ない" or parts[j + 1][0] == "無い") and (parts[j + 1][1] == "助動詞" and ("非" not in parts[j][2] or "非" in parts[j][2] and parts[j][6] == "未然形" or (partsLength - 1 >= j + 3 and parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞")) or (parts[j][1] == "助詞" or parts[j][1] == "動詞") and (parts[j + 1][1] == "形容詞" or parts[j][2] == "副助詞")) and (parts[j + 2][1] == "助動詞" and "デス" in parts[j + 2][5] or parts[j + 2][1] == "記号" or parts[j + 2][2] == "終助詞" or "ダ" in parts[j + 2][5] and parts[j + 2][6] == "未然形" or parts[j + 2][1] == "名詞" and "非" in parts[j + 2][2] and parts[j + 3][1] == "助動詞") :
 				if j - 1 > 0 and parts[j - 1][1] == "助動詞" and parts[j][1] == "助詞" and parts[j][2] == "係助詞" :
-					outputLines.remove(parts[j - 1][0])
+					outputLines.pop()
 					parts[j][0] = parts[j - 1][7]
 					parts[j + 1][0] = ''
 
@@ -181,10 +181,6 @@ def DN(inputText, det) :
 
 				elif parts[j][1] == "動詞" and parts[j + 1][1] == "形容詞" :
 					parts[j + 1][0] = "る"
-
-				elif j - 1 > 0 and (j - 2 > 0 and parts[j - 2][2] == "格助詞" and parts[j - 1][2] == "係助詞" or parts[j - 1][2] != "係助詞") and parts[j - 1][1] != "副詞" and parts[j][1] == "動詞" :
-					parts[j][0] = parts[j][7]
-					parts[j + 1][0] = ''
 
 				elif parts[j][1] == "助動詞" and "連用" in parts[j][6] :
 					parts[j][0] = parts[j][7]
@@ -300,3 +296,4 @@ def DN(inputText, det) :
 			outputLines.append(parts[j][0])
 
 	return ''.join(outputLines).replace("!。！", '') + '\n'
+

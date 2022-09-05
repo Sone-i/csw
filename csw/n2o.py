@@ -109,7 +109,7 @@ def NO(inputText, det) :
 			k += 1
 
 		for j in range(0, partsLength, 1) :
-			if j == changeHere and (parts[j + 1][1] == "記号" or parts[j + 1][1] == "助動詞" or (parts[j + 1][1] == "助詞" and parts[j + 1][2] == "終助詞")) :
+			if j == changeHere and parts[j][1] == "動詞" and "非" not in parts[j][2] and (parts[j + 1][1] == "記号" or parts[j + 1][1] == "助動詞" or (parts[j + 1][1] == "助詞" and parts[j + 1][2] == "終助詞")) :
 				if "五段" in parts[j][5] :
 					changeSur = parts[j][0]
 					change = godanHenkan(parts[j][0][-1:])
@@ -145,3 +145,4 @@ def NO(inputText, det) :
 			outputLines.append(parts[j][0])
 
 	return ''.join(outputLines).replace("!。！", '') + '\n'
+

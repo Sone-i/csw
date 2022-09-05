@@ -74,8 +74,11 @@ def ND(inputText, det):
 			if tmpSurface != "" :
 				parts.append([tmpSurface, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7])
 
+			# 文末が「ない」のとき、なにもしない
 			if [tmpSurface, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7] == checkNai :
 				changeFlag = 1
+			if changeFlag == 1 and tmp1 != "助動詞" and tmp1 != "記号" :
+				changeFlag = 0
 
 			meCount += 1
 			if meCount == length:
@@ -104,7 +107,7 @@ def ND(inputText, det):
 						changeFlag = 0
 					k += 1
 
-			elif (parts[j][0] == "ない" or parts[j][0] == "無い") and (parts[j][1] == "形容詞" or parts[j][1] == "助動詞") and changeFlag == 0 :
+			elif (parts[j][0] == "ない" or parts[j][0] == "無い") and (parts[j][1] == "形容詞" or parts[j][1] == "助動詞") and partsLength - 1 >= j + 1 and (parts[j + 1][1] == "助動詞" or parts[j + 1][1] == "記号") and changeFlag == 0 :
 				outputText = parts[j][0]
 
 				changeFlag = 1
@@ -133,7 +136,10 @@ def ND(inputText, det):
 				changeFlag = 1
 
 			elif parts[j][0] in AverbSpecial and parts[j - 1][1] != "形容詞" and parts[j - 1][0] == outputText and parts[j + 1][1] != "形容詞" and parts[j + 1][1] != "動詞" and "形容動詞" not in parts[j + 1][2] and not (parts[j - 1][1] == "動詞" and parts[j + 1][1] == "名詞" and "助動詞" not in parts[j + 1][3]) and "副" not in parts[j + 1][2] and parts[j + 1][0] != "、" and changeFlag == 0 :
-				if parts[j][0] == "ます" :
+				if j - 2 >= 0 and parts[j - 2][0] == "ない":
+					outputText = parts[j][0]
+
+				elif parts[j][0] == "ます" :
 					outputText = "ません"
 
 				elif parts[j][0] == "です" :
@@ -156,8 +162,7 @@ def ND(inputText, det):
 
 				changeFlag = 1
 
-			elif "・" in parts[j][5] and re.search("(?<=・).+", parts[j][5]).group() in AverbSpecialHen and parts[j][6] != "連用形" and parts[j][6] != "仮定形" and parts[j - 1][1] != "形容詞" and parts[j - 1][0] == outputText and parts[j + 1][1] != "形容詞" and parts[j + 1][1] != "動詞" and "形容動詞" not in parts[j + 1][2] and not (parts[j - 1][1] == "動詞" and parts[j + 1][1] == "名詞") and ("副" not in parts[j + 1][2] or (parts[j - 1][1] == "名詞" and "非" not  in parts[j - 1][2])) and changeFlag == 0 :
-
+			elif "・" in parts[j][5] and re.search("(?<=・).+", parts[j][5]).group() in AverbSpecialHen and parts[j][6] != "連用形" and parts[j][6] != "仮定形" and parts[j - 1][1] != "形容詞" and parts[j - 1][1] != "副詞" and parts[j - 1][0] == outputText and parts[j + 1][1] != "形容詞" and parts[j + 1][1] != "動詞" and "形容動詞" not in parts[j + 1][2] and not (parts[j - 1][1] == "動詞" and parts[j + 1][1] == "名詞") and ("副" not in parts[j + 1][2] or (parts[j - 1][1] == "名詞" and "非" not  in parts[j - 1][2])) and changeFlag == 0 :
 				if "マス" in parts[j][5] :
 					outputText = "ません"
 
@@ -168,7 +173,7 @@ def ND(inputText, det):
 					outputText = "なかった"
 
 				elif "ダ" in parts[j][5] :
-				 	outputText = "でない"
+					outputText = "でない"
 
 				changeFlag = 1
 
@@ -248,7 +253,7 @@ def ND(inputText, det):
 				
 				changeFlag = 1
 
-			elif parts[j][0] == "あっ" and parts[j][1] == "動詞" and "ワ" in parts[j][5] and changeFlag == 0 :
+			elif parts[j][0] == "あっ" and parts[j][1] == "動詞" and ("ワ" in parts[j][5] or "ラ" in parts[j][5]) and changeFlag == 0 :
 				outputText = "なかっ"
 				
 				changeFlag = 1
@@ -265,7 +270,7 @@ def ND(inputText, det):
 				else :
 					outputText = parts[j][0]
 
-			elif parts[j][1] == "副詞" and "助詞" not in parts[j][2] and partsLength - 1 >= j + 1 and parts[j + 1][1] != "形容詞" and parts[j + 1][1] != "副詞" and parts[j + 1][1] != "名詞" and parts[j + 1][1] != "感動詞" and changeFlag == 0 :
+			elif j - 1 >= 0 and parts[j][1] == "副詞" and "助詞" not in parts[j][2] and partsLength - 1 >= j + 1 and "連体" not in parts[j + 1][2] and parts[j + 1][1] != "助動詞" and parts[j + 1][1] != "形容詞" and parts[j + 1][1] != "副詞" and parts[j + 1][1] != "名詞" and parts[j + 1][1] != "感動詞" and changeFlag == 0 :
 				outputText = parts[j][0] + "でない"
 				
 				changeFlag = 1
@@ -479,7 +484,10 @@ def ND(inputText, det):
 						changeFlag = 0
 
 				elif parts[j][6] == "基本形" or parts[j][6] == "連体形" :
-					if partsLength - 1 >= j + 1 and ("接続" in parts[j + 1][2] or "接続" in parts[j + 1][6]) :
+					if partsLength - 1 >= j + 1 and parts[j + 1][1] == "名詞" and "非" in parts[j + 1][2]:
+						outputText = parts[j][0][::-1].replace(parts[j][0][-1:], "いな", 1)[::-1]
+
+					elif partsLength - 1 >= j + 1 and ("接続" in parts[j + 1][2] or "接続" in parts[j + 1][6]) :
 						outputText = parts[j][0]
 						changeFlag = 0
 
@@ -495,7 +503,10 @@ def ND(inputText, det):
 						outputText = parts[j][0][::-1].replace(parts[j][0][-1:], "いな", 1)[::-1]
 				
 				elif parts[j][6] == "仮定形" :
-					outputText = parts[j][0][::-1].replace(parts[j][0][-1:], "れけな", 1)[::-1]
+					#outputText = parts[j][0][::-1].replace(parts[j][0][-1:], "れけな", 1)[::-1]
+					
+					outputText = parts[j][0]
+					changeFlag = 0
 
 				else :
 					outputText = parts[j][0]
@@ -751,3 +762,4 @@ def ND(inputText, det):
 			outputLines.append(outputText)
 
 	return ''.join(outputLines).replace("!。！", '') + '\n'
+

@@ -156,3 +156,4 @@ def NQ(inputText, det) :
 	retLines = re.sub("(?<=？)\W", "", retLines)
 	
 	return ''.join(retLines) + '\n'
+

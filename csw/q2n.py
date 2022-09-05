@@ -88,6 +88,9 @@ def QN(inputText, det) :
 				parts[j][0] = ''
 				parts[j + 1][0] = "。"
 
+			elif (parts[j][1] == "助動詞" or parts[j][1] == "助詞" ) and partsLength - 1 >= j + 1 and (parts[j + 1][0] == "?" or parts[j + 1][0] == "？"):
+				parts[j + 1][0] = "。"
+
 			elif partsLength - 1 >= j + 3 and "ダ" in parts[j][5] and parts[j][6] == "体言接続" and parts[j + 2][0] == "か" and parts[j + 3][1] == "記号" and parts[j + 2][1] == "助詞" and parts[j + 2][2] == "副助詞／並立助詞／終助詞" :
 				parts[j][0] = "だ"
 				parts[j + 1][0] = ''
@@ -100,3 +103,4 @@ def QN(inputText, det) :
 			outputLines.append(parts[j][0])
 
 	return ''.join(outputLines) + '\n'
+
